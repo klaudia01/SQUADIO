@@ -1,0 +1,55 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block content %}
+
+    <body id="logged">
+    <main class="profile layout">
+        {% include 'app/sidebar.html' %}
+        <div class="container">
+            <div class="content">
+                <div class="edit__body">
+                    <div class="layout__box layout__box--edit">
+                        <div class="box__text box__text--edit">EDYTUJ KONTAKT: {{ contact.get_contact_form_display }}</div>
+                        <div class="layout__body">
+                            <form class="poput__form" method="POST">
+                                {% csrf_token %}
+                                <div class="form__list">
+                                    <div class="form__group">
+                                        <label>Nazwa użytkownika</label>
+                                        {{ form.contact_username }}
+                                    </div>
+                                    <div class="form__group">
+                                        <label>Link</label>
+                                        {{ form.contact_link }}
+                                    </div>
+                                       <a href="#" class="btn btn--border btn--delete"
+                                       data-delete-url="{% url 'delete_contact' contact.id %}"
+                                       onclick="deleteAlert(this); return false;">Usuń</a>
+                                    </div>
+                                    <div class="form__action">
+                                        <a class="btn btn--border btn--decline btn--lighter__at__hover" href="{% url 'edit_contacts_list' %}">Anuluj</a>
+                                        <button class="btn btn--border btn--accept btn--glow" type="submit">Potwierdź</button>
+                                    </div>
+                                {% if form.errors %}
+    <div class="alert alert-danger">
+        <strong>Error(s):</strong>
+        <ul>
+            {% for error in form.errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+                                </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="{% static 'js/form_script.js' %}"></script>
+        <script src="{% static 'js/delete_script.js' %}"></script>
+    </main>
+
+{% endblock content %}

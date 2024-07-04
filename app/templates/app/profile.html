@@ -1,0 +1,248 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block content %}
+
+    <body id="logged">
+    <main class="profile layout">
+        {% include 'app/sidebar.html' %}
+        <div class="content">
+            <div class="profile">
+                <div class="profile__top">
+                    <img class="background" alt="" src="{{ user.background.url }}"/>
+                    <div class="profile__infox">
+                        <div class="profile__avatar">
+                            <div class="avatar avatar--large">
+                                <img alt="" src="{{ user.avatar.url }}"/>
+                            </div>
+                        </div>
+                        <div class="profile__edit">
+                            {% if request.user == user %}
+                                <a href="{% url 'edit_user' %}"
+                                   class="btn btn--border btn--profile btn--lighter__at__hover">Edytuj profil</a>
+                            {% else %}
+                                <form method="post" action="{% url 'follow' user_id=user.id %}">
+                                    {% csrf_token %}
+                                    {{ follow_form.user_id }}
+                                    {{ follow_form.next }}
+                                    <input type="hidden" name="user_id" value="{{ user.id }}">
+                                    {% if user in request.user.followed_users.all %}
+                                        <button class="btn btn--border btn--unfollow btn--profile" type="submit">
+                                            Przestań obserwować
+                                        </button>
+                                    {% else %}
+                                        <button class="btn btn--border btn--profile" type="submit">Obserwuj</button>
+                                    {% endif %}
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="profile__bottom">
+                    <div class="profile__info">
+                        <h1>{{ user.name }}</h1>
+                        <h4>{{ user.username }}</h4>
+                        <p>{{ user.bio }}</p>
+                    </div>
+                    <div class="profile__about">
+                        <div class="profile__box">
+                            <h3>KONTAKT</h3>
+                            <ul class="flex-list">
+                                {% if user in request.user.followed_users.all or user == request.user %}
+                                    {% for contact in contacts %}
+                                        <li>
+                                            <div class="contact contact--field"><h4>{{ contact.get_contact_form_display }}:</h4>
+                                                {% if contact.contact_link %}
+                                                    <a href="{{ contact.contact_link }}"
+                                                       title="{{ contact.contact_link }}"
+                                                       onclick="redirectAlert('{{ contact.contact_link }}'); return false;">{{ contact.contact_username }}</a>
+                                                {% else %}
+                                                    {{ contact.contact_username }}
+                                                {% endif %}
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                    {% if request.user == user %}
+                                        {% if contacts %}
+                                            {% if not forloop.last %}
+                                                <li class="contact">
+                                                    <a href="{% url 'edit_contacts_list' %}">Edytuj kontakty</a>
+                                                </li>
+                                            {% endif %}
+                                        {% else %}
+                                            <li class="contact">
+                                                <a href="{% url 'edit_contacts_list' %}">Dodaj kontakt</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endif %}
+                                {% else %}
+                                    <p>Zaobserwuj użytkownika <span>{{ user.username }}</span>, aby zobaczyć listę jego
+                                        kontaktów</p>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="preferences__container">
+                        <h3>GRY</h3>
+                        <div class="preferences__body">
+                            <ul class="flex-list">
+                                {% for game in games %}
+                                    <li>
+                                        <div class="preferences__box"><p>{{ game.get_game_name_display }}</p></div>
+                                    </li>
+                                {% endfor %}
+                                {% if request.user == user %}
+                                    {% if games %}
+                                        {% if not forloop.last %}
+                                            <li>
+
+                                                <a href="{% url 'edit_games' %}" class="preferences__box">
+                                                    <div class="icon">
+                                                        <img alt="" src="{% static 'assets/add.png' %}">
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    {% else %}
+                                        <li>
+                                            <a href="{% url 'edit_games' %}" class="preferences__box">
+                                                <div class="icon">
+                                                    <img alt="" src="{% static 'assets/add.png' %}">
+                                                </div>
+                                            </a>
+
+                                        </li>
+                                    {% endif %}
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="preferences__container">
+                        <h3>PLATFORMY</h3>
+                        <div class="preferences__body">
+                            <ul class="flex-list">
+                                {% for platform in platforms %}
+                                    <li>
+                                        <div class="preferences__box"><p>{{ platform.get_platform_name_display }}</p>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                                {% if request.user == user %}
+                                    {% if platforms %}
+                                        {% if not forloop.last %}
+                                            <li>
+                                                <a href="{% url 'edit_platforms' %}" class="preferences__box">
+                                                    <div class="icon">
+                                                        <img alt="" src="{% static 'assets/add.png' %}">
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    {% else %}
+                                        <li>
+                                            <a href="{% url 'edit_platforms' %}" class="preferences__box">
+                                                <div class="icon">
+                                                    <img alt="" src="{% static 'assets/add.png' %}">
+                                                </div>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="preferences__container">
+                        <h3>STYL GRY</h3>
+                        <div class="preferences__body">
+                            <ul class="flex-list">
+                                {% for play_style in play_styles %}
+                                    <li>
+                                        <div class="preferences__box">
+                                            <p>{{ play_style.get_play_style_name_display }}</p></div>
+                                    </li>
+                                {% endfor %}
+                                {% if request.user == user %}
+                                    {% if play_styles %}
+                                        {% if not forloop.last %}
+                                            <li>
+                                                <a href="{% url 'edit_play_styles' %}" class="preferences__box">
+                                                    <div class="icon">
+                                                        <img alt="" src="{% static 'assets/add.png' %}">
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    {% else %}
+                                        <li>
+                                            <a href="{% url 'edit_play_styles' %}" class="preferences__box">
+                                                <div class="icon">
+                                                    <img alt="" src="{% static 'assets/add.png' %}">
+                                                </div>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                    <h3>WPISY</h3>
+                    {% if user_posts %}
+                        {% for post in user_posts %}
+                            <ul>
+                                <li>
+                                    <div class="post__box">
+                                        <div class="post__avatar">
+                                            <div class="avatar avatar--small avatar--post">
+                                                <a href="{% url 'profile' post.user.username %}">
+                                                    <img src="{{ post.user.avatar.url }}" alt="">
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="post">
+                                            <div class="post__body">
+                                                <div class="post__info">
+                                                    <a href="{% url 'profile' post.user.username %}">
+                                                        <h2>{{ post.user.name }}</h2>
+                                                    </a>
+                                                    <a href="{% url 'profile' post.user.username %}">
+                                                            <p>{{ post.user.username }}</p>
+                                                    </a>
+                                                    <p>•&nbsp;&nbsp;{{ post.created_at|date:"H:i, j E, Y" }}</p>
+                                                </div>
+                                                <div class="post__content">
+                                                    {{ post.text }}
+                                                    <ul class="tag-list">
+                                                        {% for tag in post.tag.all %}
+                                                            <li>
+                                                                <div class="tag">
+                                                                    <a href="?tag={{ tag.name }}">{{ tag.name }}</a>
+                                                                </div>
+                                                            </li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                </div>
+                                                {% if request.user == user %}
+                                                    <a href="#" class="btn btn--border btn--delete_post"
+                                                       data-delete-url="{% url 'delete_post' post.id %}"
+                                                       onclick="deleteAlert(this); return false;">Usuń</a>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                </li>
+                            </ul>
+                        {% endfor %}
+                    {% else %}
+                        {% if request.user == user %}
+                            <p>Nie opublikowałeś/aś jeszcze żadnych wpisów. Aby dodać nowy wpis, przejdź na <a
+                                    href="{% url 'home' %}"><span>stronę główną</span></a>.</p>
+                        {% else %}
+                            <p>Użytkownik nie opublikował jeszcze żadnych wpisów.</p>
+                        {% endif %}
+                    {% endif %}
+    </main>
+    <script src="{% static 'js/profile_script.js' %}"></script>
+    <script src="{% static 'js/delete_script.js' %}"></script>
+    </body>
+
+{% endblock content %}

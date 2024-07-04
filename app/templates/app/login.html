@@ -1,0 +1,49 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+    <body id="starting">
+    <main class="auth layout">
+        <div class="column column--right column--bg">
+            <img class="start__pic" alt="" src="/static/assets/start_pic.png">
+        </div>
+        <div class="title header">
+            <a href="{% url 'start' %}" class="logo logo--bigger"><img src="/static/assets/logo.png"/></a>
+            <a href="{% url 'start' %}">SQUADIO</a>
+        </div>
+        <div class="layout__box layout__box--login">
+            <div class="layout__body">
+                <p class="box__text box__text--auth">Witamy ponownie!</p>
+                <form class="form" action="" method="POST">
+                    {% csrf_token %}
+                    <div class="form__group">
+                        <input id="email" name="email" type="text" placeholder="Email"/>
+                    </div>
+                    <div class="form__group">
+                        <input id="password" name="password" type="password" placeholder="Hasło"/>
+                    </div>
+                    {% if messages %}
+                        <ul class="messages">
+                            {% for message in messages %}
+                                <li>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% if is_locked_out %}
+                        <div class="messages">
+                            <p>Twoje konto zostało tymczasowo zablokowane z powodu zbyt wielu nieudanych prób logowania.
+                                Spróbuj ponownie później.</p>
+                        </div>
+                    {% endif %}
+                    <button class="btn btn--continue" type="submit">Zaloguj się</button>
+                </form>
+                <div class="auth__action">
+                    <p>Nie masz jeszcze konta?</p>
+                    <a href="{% url 'register' %}" class="btn btn--link">Zarejestruj się</a>
+                </div>
+            </div>
+        </div>
+    </main>
+    </body>
+
+{% endblock content %}

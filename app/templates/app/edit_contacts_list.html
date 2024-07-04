@@ -1,0 +1,74 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block content %}
+
+    <body id="logged">
+    <main class="profile layout">
+        {% include 'app/sidebar.html' %}
+        <div class="container">
+            <div class="content">
+                <div class="edit__body">
+                    <div class="layout__box layout__box--edit">
+                        <div class="box__text box__text--edit">EDYTUJ KONTAKTY</div>
+                        <div class="layout__body">
+                            <ul class="flex-list">
+                                {% for contact in contacts %}
+                                    <li>
+                                        <div class="form__list">
+                                            <div class="contact contact--field">
+                                                <h4>{{ contact.get_contact_form_display }}:</h4>
+                                                {% if contact.contact_link %}
+                                                <a href="{{ contact.contact_link }}" title="{{ contact.contact_link }}">{{ contact.contact_username }}</a>
+                                            {% else %}
+                                                {{ contact.contact_username }}
+                                            {% endif %}
+                                            </div>
+                                            <a href="{% url 'edit_contact' contact.id %}"
+                                               class="btn btn--border btn--contact--edit btn--lighter__at__hover">Edytuj kontakt</a>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            <div class="form" id="contact-form-popup" style="display:none;">
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <div class="form__group">
+                                        {{ form.contact_form }}
+                                    </div>
+                                    <div class="form__group">
+                                        {{ form.contact_username }}
+                                    </div>
+                                    <div class="form__group">
+                                        {{ form.contact_link }}
+                                    </div>
+                                    <button class="btn btn--border btn--accept btn--add" type="submit">DODAJ
+                                        KONTAKT
+                                    </button>
+                                </form>
+                            </div>
+                            {% if messages %}
+                                <ul class="messages">
+                                    {% for message in messages %}
+                                        <li>{{ message }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                            <div class="form__action">
+                                <a class="btn btn--border btn--decline btn--lighter__at__hover"
+                                   href="{% url 'profile' request.user.username %}">Cofnij</a>
+                                <button class="btn btn--border btn--accept btn--glow open-form-popup"
+                                        data-form-type="contact">Dodaj nowy kontakt
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="{% static 'js/form_script.js' %}"></script>
+    </body>
+
+{% endblock content %}

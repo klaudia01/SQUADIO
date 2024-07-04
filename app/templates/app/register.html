@@ -1,0 +1,52 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+    <body id="starting">
+    <main class="auth layout">
+        <div class="column column--right column--bg">
+            <img class="start__pic" alt="" src="/static/assets/start_pic.png">
+        </div>
+        <div class="title header">
+            <a href="{% url 'start' %}" class="logo logo--bigger"><img alt="" src="/static/assets/logo.png"/></a>
+            <a href="{% url 'start' %}"><p>SQUADIO</p></a>
+        </div>
+        <div class="layout__box layout__box--login">
+            <div class="layout__body">
+                <p class="box__text box__text--auth">Załóż konto</p>
+                <form class="form" action="" method="POST">
+                    {% csrf_token %}
+                    <div class="form__group">
+                        {{ form.email }}
+                    </div>
+                    <div class="form__group">
+                        {{ form.name }}
+                    </div>
+                    <div class="form__group">
+                        {{ form.username }}
+                    </div>
+                    <div class="form__group">
+                        {{ form.password1 }}
+                    </div>
+                    <div class="form__group">
+                        {{ form.password2 }}
+                    </div>
+                    {% if messages %}
+                        <div class="messages">
+                            {% for message in messages %}
+                                {{ message }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <button class="btn btn--continue" type="submit">Kontynuuj</button>
+                </form>
+                <div class="auth__action">
+                    <p>Masz już konto?</p>
+                    <a href="{% url 'login' %}" class="btn btn--link">Zaloguj się</a>
+                </div>
+            </div>
+        </div>
+    </main>
+    </body>
+
+{% endblock content %}

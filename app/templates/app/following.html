@@ -1,0 +1,56 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block content %}
+
+    <body id="logged">
+    <main class="homepage layout">
+        {% include 'app/sidebar.html' %}
+        <div class="content">
+            <div class="homepage">
+                <div class="logged_box">
+                <div class="friends__top">
+                        <a href="{% url 'friends' %}" >Znajomi</a>
+                        <a href="{% url 'following' %}" class="active">Obserwowani</a>
+                        <a href="{% url 'followers' %}">Obserwujący</a>
+                    </div>
+                        <div class="profiles_list">
+                            <ul>
+                            {% for followed_user in following %}
+                                <li class="profile__position">
+                                    <div class="user__avatar">
+                                        <div class="avatar avatar--medium">
+                                            <a href={% url 'profile' followed_user.followed_user.username %}>
+                                            <img alt="" src={{ followed_user.followed_user.avatar.url }}/>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="profile__info">
+                                        <a href={% url 'profile' followed_user.followed_user.username %}>
+                                            <h2>{{ followed_user.followed_user.name }}</h2>
+                                        </a>
+                                        <a href={% url 'profile' followed_user.followed_user.username %}>
+                                            <p>{{ followed_user.followed_user.username }}</p>
+                                        </a>
+                                    </div>
+                                    <form method="post" action="{% url 'follow' user_id=followed_user.followed_user.id %}">
+                                        {% csrf_token %}
+                                        {{ follow_form.user_id }}
+                                        {{ follow_form.next }}
+                                        <input type="hidden" name="user_id" value="{{ followed_user.id }}">
+                                            {% if followed_user.followed_user in request.user.followed_users.all %}
+                                                <button class="btn btn--border btn--unfollow btn--profile" type="submit">Przestań obserwować</button>
+                                            {% endif %}
+                                    </form>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+            </div>
+        </div>
+        </div>
+    </main>
+    </body>
+{% endblock content %}

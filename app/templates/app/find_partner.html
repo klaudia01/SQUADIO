@@ -1,0 +1,130 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block content %}
+
+    <body id="logged">
+    <main class="homepage layout">
+        {% include 'app/sidebar.html' %}
+        <div class="content">
+            <div class="homepage">
+                <div class="logged_box">
+                    <div class="home__message">
+                        <h1>WYSZUKIWANIE PARTNERÓW DO GRY</h1>
+                        <p>Znajdziesz tutaj graczy mających podobne preferencje do twoich. Jeżeli chcesz zawęzić
+                            wyszukiwanie, użyj przycisku filtrowania.</p>
+                        <hr>
+                    </div>
+                    <div class="form" id="filter-form-popup" style="display:none;">
+                        <form method="get">
+                            <div class="form__checkboxes">
+                                <div class="form__checkbox">
+                                    <p>GRY</p>
+                                    {{ form.selected_games }}
+                                </div>
+                                <div class="form__checkbox">
+                                    <p>Platformy</p>
+                                    {{ form.selected_platforms }}
+                                </div>
+                                <div class="form__checkbox">
+                                    <p>Style gry</p>
+                                    {{ form.selected_play_styles }}
+                                </div>
+                            </div>
+                            <button class="btn btn--border btn--accept btn--add" type="submit">Filtruj</button>
+                        </form>
+                    </div>
+                    <button class="btn btn--border btn--filter open-form-popup" data-form-type="filter">Filtruj</button>
+                    <div class="profiles_list">
+                        {% if matched_users %}
+                            <ul>
+                                {% for user in matched_users %}
+                                    <li class="profile__position profile__position--search{% if user.has_all_preferences %} perfect__match{% elif user.has_similar_preferences %} great__match{% endif %}">
+                                        <div class="user__avatar">
+                                            <div class="avatar avatar--medium">
+                                                <a href={% url 'profile' user.username %}>
+                                                    <img alt="" src="{{ user.avatar.url }}"/>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="profile__info">
+                                            {% if user.has_all_preferences %}
+                                                <div class="match__text match__text--perfect">
+                                                    <h2>IDEALNE DOPASOWANIE</h2>
+                                                </div>
+                                            {% elif user.has_similar_preferences %}
+                                                <div class="match__text match__text--great">
+                                                    <h2>ŚWIETNE DOPASOWANIE</h2>
+                                                </div>
+                                            {% endif %}
+                                            <a href={% url 'profile' user.username %}>
+                                                <h1>{{ user.name }}</h1>
+                                            </a>
+                                            <a href={% url 'profile' user.username %}>
+                                                <p>{{ user.username }}</p>
+                                            </a>
+                                            <ul>
+                                                <li>Gry:
+                                                    {% for game in user.game_set.all %}
+                                                        <div class="tag">
+                                                            {{ game.get_game_name_display }}
+                                                        </div>
+                                                    {% endfor %}
+                                                </li>
+                                                <li>Platformy:
+                                                    {% for platform in user.platform_set.all %}
+                                                        <div class="tag">
+                                                            {{ platform.get_platform_name_display }}
+                                                        </div>
+                                                    {% endfor %}
+                                                </li>
+                                                <li>Style gry:
+                                                    {% for playstyle in user.playstyle_set.all %}
+                                                        <div class="tag">
+                                                            {{ playstyle.get_play_style_name_display }}
+                                                        </div>
+                                                    {% endfor %}
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <form method="post" action="{% url 'follow' user_id=user.id %}">
+                                            {% csrf_token %}
+                                            {{ follow_form.user_id }}
+                                            {{ follow_form.next }}
+                                            <input type="hidden" name="user_id" value="{{ user.id }}">
+                                            {% if user in request.user.followed_users.all %}
+                                                <button class="btn btn--border btn--unfollow btn--find btn--profile"
+                                                        type="submit">Przestań obserwować
+                                                </button>
+                                            {% else %}
+                                                <button class="btn btn--border btn--follow btn--find btn--profile" type="submit">
+                                                    Obserwuj
+                                                </button>
+                                            {% endif %}
+                                        </form>
+                                    </li>
+
+                                {% endfor %}
+
+                                <div class="match__not__found">
+                                    <p>Aby znaleźć więcej graczy spróbuj dostosować filtry lub zaktualizować swoje
+                                        preferencje na <a href="{% url 'profile' request.user.username %}">profilu</a>.
+                                    </p>
+                                </div>
+                            </ul>
+                        {% else %}
+                            <div class="match__not__found">
+                                <p>Nie znaleziono użytkowników spełniających wybrane kryteria.</p>
+                                <p>Spróbuj dostosować filtry lub zaktualizować swoje preferencje na <a
+                                        href="{% url 'profile' request.user.username %}">profilu</a>.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="{% static 'js/filter_script.js' %}"></script>
+    </body>
+{% endblock content %}

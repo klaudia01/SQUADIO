@@ -1,0 +1,33 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+    <body id="starting">
+    <main class="start layout">
+        <div class="column column--right column--bg">
+            <img class="start__pic" alt="" src="/static/assets/start_pic.png/">
+        </div>
+        <div class="title header">
+            <img class="logo logo--bigger" alt="" src="/static/assets/logo.png/">
+            <p>SQUADIO</p>
+        </div>
+        <div class="columns">
+            <div class="column column--left">
+                <div class="join__text"><p>Twoja nowa drużyna już na Ciebie czeka</p></div>
+                <div class="join__text join__text--smaller"><p>Dołącz teraz</p></div>
+                <div class="layout__box layout__box--start">
+                    <div class="layout__body layout__body--start">
+                        <a href="{% url 'register' %}" class="btn btn--border btn--register btn--glow"><p>UTWÓRZ
+                            KONTO</p></a>
+                        <div class="start__text">
+                            <p>Masz już konto?</p>
+                        </div>
+                        <a href="{% url 'login' %}" class="btn btn--border btn--login btn--glow"><p>ZALOGUJ SIĘ</p></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    </body>
+
+{% endblock content %}

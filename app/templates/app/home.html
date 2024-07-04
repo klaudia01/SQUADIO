@@ -1,0 +1,104 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block content %}
+
+    <body id="logged">
+    <main class="homepage layout">
+        {% include 'app/sidebar.html' %}
+        <div class="content">
+            <div class="homepage">
+                <div class="logged_box">
+                    <div class="home__top">
+                        <div class="home__message">
+                            <h1>Witaj <span>{{ request.user.name }}</span>, pora znaleźć nową drużynę!</h1>
+                        </div>
+                        <form method="post" action="{% url 'home' %}">
+                            {% csrf_token %}
+                            <div class="post__create">
+                                <div class="avatar avatar--small avatar--post">
+                                    <a href="{% url 'profile' request.user.username %}">
+                                        <img src="{{ user.avatar.url }}" alt="">
+                                    </a>
+                                </div>
+                                <div class="form__group form__group--post">
+                                    {{ form.text }}
+                                    {{ form.tag }}
+                                </div>
+
+                            </div>
+                            <div class="post__create">
+                                <button class="btn  btn--border btn--accept btn--post btn--glow" type="submit">Opublikuj
+                                    wpis
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <hr>
+                    <div class="home__bottom">
+                        <div class="posts__list">
+                            <ul>
+                                {% for post in posts %}
+                                    <li>
+                                        <div class="post__box">
+                                            <div class="post__avatar">
+                                                <div class="avatar avatar--small avatar--post">
+                                                    <a href="{% url 'profile' post.user.username %}">
+                                                        <img src="{{ post.user.avatar.url }}" alt="">
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="post">
+                                                <div class="post__body">
+                                                    <div class="post__info">
+                                                        <a href="{% url 'profile' post.user.username %}">
+                                                            <h3>{{ post.user.name }}</h3>
+                                                        </a>
+                                                        <a href="{% url 'profile' post.user.username %}">
+                                                            <p>{{ post.user.username }}</p>
+                                                        </a>
+                                                         <p>•&nbsp;&nbsp;{{ post.created_at|date:"H:i, j E, Y" }}</p>
+                                                    </div>
+                                                    <div class="post__content">
+                                                        {{ post.text }}
+                                                        <ul>
+                                                            {% for tag in post.tag.all %}
+                                                                <li>
+                                                                    <div class="tag">
+                                                                        <a href="?tag={{ tag.name }}">{{ tag.name }}</a>
+                                                                    </div>
+                                                                </li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </div>
+                                                    {% if request.user == post.user %}
+                                                        <a href="#" class="btn btn--border btn--delete_post"
+                                                           data-delete-url="{% url 'delete_post' post.id %}"
+                                                           onclick="deleteAlert(this); return false;">Usuń</a>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="posts__tags">
+                            <h3>Filtruj posty po tagu:</h3>
+                            <a href={% url 'home' %}><p>Wyczyść filtry</p></a>
+                            <ul>
+                                {% for tag in tags %}
+                                    <li><a href="?tag={{ tag.name }}">{{ tag.name }} ({{ tag.num_posts }})</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="{% static 'js/delete_script.js' %}"></script>
+    </body>
+
+{% endblock content %}

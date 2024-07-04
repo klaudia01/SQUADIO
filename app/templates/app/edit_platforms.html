@@ -1,0 +1,64 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block content %}
+
+    <body id="logged">
+    <main class="profile layout">
+        {% include 'app/sidebar.html' %}
+        <div class="container">
+            <div class="content">
+                <div class="edit__body">
+                    <div class="layout__box layout__box--edit">
+                        <div class="box__text box__text--edit">EDYTUJ PLATFORMY</div>
+                        <div class="layout__body">
+                            <ul class="flex-list">
+                                {% for platform in platforms %}
+                                    <li>
+                                        <div class="form__list">
+                                            <div class="contact contact--field">
+                                                <p>{{ platform.get_platform_name_display }}</p>
+                                            </div>
+                                              <a href="#" class="btn btn--border btn--delete btn--preference"
+                                       data-delete-url="{% url 'delete_platform' platform.id %}"
+                                       onclick="deleteAlert(this); return false;">Usuń</a>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+
+                            <div class="form" id="platform-form-popup" style="display:none;">
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <div class="form__group">
+                                        {{ form.platform_name }}
+                                    </div>
+                                    <button class="btn btn--border btn--accept btn--add" type="submit">Dodaj platformę
+                                    </button>
+                                </form>
+                            </div>
+                            {% if messages %}
+                                <ul class="messages">
+                                    {% for message in messages %}
+                                        <li>{{ message }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                            <div class="form__action">
+                                <a class="btn btn--border btn--decline" href="{% url 'profile' request.user.username %}">Cofnij</a>
+                                <button class="btn btn--border btn--accept open-form-popup"
+                                        data-form-type="platform">Dodaj nową platformę
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="{% static 'js/form_script.js' %}"></script>
+    <script src="{% static 'js/delete_script.js' %}"></script>
+    </body>
+
+{% endblock content %}

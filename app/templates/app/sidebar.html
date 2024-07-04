@@ -1,0 +1,81 @@
+{% load static %}
+
+<div class="sidebar">
+    <div class="layout__box">
+        <div class="layout__body">
+            <div class="title">
+                <img class="logo" alt="" src="{% static 'assets/logo.png' %}">
+                <p>SQUADIO</p>
+            </div>
+        </div>
+    </div>
+    <ul>
+    <li>
+    <div class="link">
+        <a href="{% url 'home' %}" {% if active_page == 'home' %}class="active"{% endif %}>
+             <div class="icon">
+                    <img alt="" src="{% static 'assets/home.png' %}">
+                </div>
+            STORNA GŁÓWNA
+
+
+        </a>
+    </div>
+    </li>
+    <li>
+    <div class="link">
+        <a href="{% url 'find_partner' %}" {% if active_page == 'find_partner' %}class="active"{% endif %}>
+            <div class="icon">
+                    <img alt="" src="{% static 'assets/find_partner.png' %}">
+                </div>
+            WYSZUKIWANIE PARTNERA
+        </a>
+    </div>
+    </li>
+    <li>
+    <div class="link">
+        <a href="{% url 'friends' %}" {% if active_page == 'friends' %}class="active"{% endif %}>
+            <div class="icon">
+                    <img alt="" src="{% static 'assets/friends.png' %}">
+                </div>
+            ZNAJOMI
+        </a>
+    </div>
+    </li>
+    <li>
+    <div class="link">
+        <a href="{% url 'profile' request.user.username %}" {% if active_page == 'profile' %}class="active"{% endif %}>
+            <div class="icon">
+                    <img alt="" src="{% static 'assets/profile.png' %}">
+                </div>
+            PROFIL
+        </a>
+    </div>
+    </li>
+    <div class="profile__logout">
+        <a href="{% url 'profile' request.user.username %}">
+        <div class="avatar avatar--small">
+            <img alt="" src="{{ request.user.avatar.url }}">
+        </div>
+            </a>
+
+        <div class="profile__logout__info">
+            <a href="{% url 'profile' request.user.username %}">
+            <h3>{{ request.user.name }}</h3>
+                </a>
+                <a href="{% url 'profile' request.user.username %}">
+            <p>{{ request.user.username }}</p>
+            </a>
+        </div>
+            <div class="logout__button">
+            <a href="{% url 'logout' %}">
+                <div>
+                    <img alt="" src="{% static 'assets/logout.png' %}">
+                </div>
+            </a>
+        </div>
+        </div>
+    </ul>
+    </div>
+
+
